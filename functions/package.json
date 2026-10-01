@@ -1,0 +1,13 @@
+{
+  "name": "cavi-go-backend",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs",
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.0.0",
+    "firebase-functions": "^7.0.0"
+  }
+}

@@ -1,0 +1,4 @@
+export function validText(v,max=120){if(typeof v!=='string'||!v.trim()||v.length>max)throw Error('invalid-argument');return v.trim()}
+export function transition(order,actor,next){const driver=actor===order.driverId,customer=actor===order.customerId;const allowed={driver_assigned:'driver_arriving',driver_arriving:'driver_arrived',driver_arrived:'in_progress',in_progress:'completed'};if(next==='cancelled'){if(!customer||!['searching','driver_assigned','driver_arriving','driver_arrived'].includes(order.status))throw Error('permission-denied');return next}if(!driver||allowed[order.status]!==next)throw Error('permission-denied');return next}
+export function money(base,meters,perKm,min){for(const v of [base,meters,perKm,min])if(!Number.isSafeInteger(v)||v<0)throw Error('invalid-argument');return Math.max(min,base+Math.ceil(meters*perKm/1000))}
+export function paymentState(payer,recipient){return payer&&recipient?'confirmed_by_parties':payer?'reported':'unpaid'}
