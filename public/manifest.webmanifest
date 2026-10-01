@@ -1,0 +1,1 @@
+{"name": "Cavi Go", "short_name": "Cavi Go", "start_url": "/", "display": "standalone", "background_color": "#f5f5ef", "theme_color": "#163b30", "icons": [{"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]}
