@@ -1,0 +1,470 @@
+TOJIKISTON UCHUN ISH, USTA VA TAKSI PLATFORMASI — TO‘LIQ MASTER PROMPT
+
+Sen tajribali product designer, full-stack dasturchi va tizim arxitektori sifatida ishlagin. Quyidagi talablar asosida ishlaydigan platforma yarat. Natija chiroyli interfeys, haqiqiy backend, foydalanuvchilar o‘rtasidagi ishlaydigan jarayonlar va tekshirilgan asosiy funksiyalardan iborat bo‘lsin.
+
+1. MAQSAD VA KO‘LAM
+
+Tojikiston uchun uch xizmatni bitta hisobda birlashtir:
+A) Ish e’lon qilish va ish qidirish.
+B) Usta topish, buyurtma olish, xizmatni bajarish va natija rasmlarini yuklash.
+C) Yandex Go usulidagi taksi chaqirish: manzil tanlash, haydovchi topish, kelishini kuzatish, safar va to‘lov.
+
+Ishchi nom: Cavi. Nom, logo, asosiy rang va kontaktlarni bitta konfiguratsiyadan o‘zgartirish mumkin bo‘lsin. Dizayn va brending original bo‘lsin. Yandex Go funksional jarayon uchun namuna; uning nomi, logosi va grafik elementlarini ko‘chirma.
+
+Boshlang‘ich hudud Dushanbe. Shaharlar ro‘yxati admin orqali boshqarilsin. Keyingi hududlarni qo‘shish uchun kodni qayta yozish talab qilinmasin.
+
+Foydalanuvchining o‘zi yaratgan Cavi Maps mavjud: https://sultonmusic.github.io/cavi-maps/
+Bu vaqtinchalik URL. Cavi Maps platformaning asosiy xarita loyihasi bo‘lsin; uning mavjud kodini va interfeysini qayta ishlat. Xarita funksiyalarini foydalanishdan oldin tekshir.
+
+Asosiy mahsulot telefon uchun qulay responsive sayt va o‘rnatiladigan PWA bo‘lsin. Ishlaydigan web versiyani birinchi yakunla. Haqiqiy taksi xizmatida fon GPS uchun haydovchining native mobil ilovasi kerak bo‘ladigan alohida bosqichni ham ko‘rsat; PWA imkoniyatlarini noto‘g‘ri taqdim etma.
+
+2. TILLAR, PUL VA VAQT
+
+Interfeysning asosiy tili tojikcha, qo‘shimcha tillar ruscha va o‘zbekcha.
+Til almashtirish barcha sahifalar, validatsiya, bildirishnoma va xatolarga tatbiq etilsin.
+Matnlar tarjima fayllarida saqlansin. Tojik kirill harflari va o‘zbek belgilarini to‘g‘ri chiqar.
+Foydalanuvchi joylagan e’lon avtomatik tarjima qilinmasa, original tilida qolsin.
+Pul birligi TJS, interfeysda “somoni”.
+Narxlarni bazada butun diram bilan saqla, floating-point orqali pul hisoblama.
+Vaqtni serverda UTC, interfeysda Asia/Dushanbe orqali ko‘rsat.
+Telefon raqamini xalqaro E.164 formatida saqla; Tojikiston uchun +992 prefiksini qulay tanlat.
+
+3. TEXNIK ASOS
+
+Agar mavjud loyiha bo‘lmasa:
+- Frontend: React, TypeScript, Vite, Tailwind CSS.
+- Backend: Firebase Authentication, Cloud Firestore Standard, Cloud Functions.
+- Rasmlar va CV: Cloud Storage for Firebase.
+- Taksi joylashuvi va online/offline presence: Firebase Realtime Database.
+- Bildirishnomalar: ilova ichidagi notification markazi, qo‘llab-quvvatlanadigan qurilmalarda Firebase Cloud Messaging.
+- Asosiy xarita: mavjud Cavi Maps. Undagi xarita moduli uchun CaviMapsAdapter; manzil qidiruvi va routing xizmatlari uchun alohida adapterlar.
+- Development: Firebase Local Emulator Suite.
+- Frontend uchun Firebase Hosting konfiguratsiyasi.
+- Testlar: biznes jarayonlari, xavfsizlik qoidalari va muhim end-to-end oqimlar.
+
+Mavjud repo bo‘lsa, uning ishlaydigan arxitekturasini avval tekshir va asosli zarurat bo‘lmasa almashtirma. Kutubxonalarning o‘zaro mos, amaldagi stable versiyalarini tanla va lockfile qo‘sh.
+
+Privileged backend amallarini frontend yoki oddiy localStorage bilan almashtirma. Firebase Admin SDK va maxfiy kalitlar faqat serverda bo‘lsin. Frontend konfiguratsiyasi bilan server secretlarini ajrat.
+
+Demo, emulator va production rejimlarini aniq ajrat. Productionda demo akkaunt, universal OTP, test admin yoki ochiq database rules ishlamasin.
+
+4. HISOBLAR VA ROLLAR
+
+Bitta foydalanuvchi bir nechta rolga ega bo‘lishi mumkin:
+- customer: xizmat yoki taksi buyurtma qiladi;
+- job_seeker: ish qidiradi va ariza yuboradi;
+- employer: ish e’loni joylaydi va arizalarni boshqaradi;
+- technician: usta yoki servis sifatida ishlaydi;
+- driver: taksi buyurtmalarini bajaradi;
+- organization_manager: tashkilot xodimlari va topshiriqlarini boshqaradi;
+- moderator: e’lonlar va shikoyatlar bilan ishlaydi;
+- admin: platformani boshqaradi.
+
+Rolga qarab kabinet va amallar o‘zgarsin.
+Oddiy foydalanuvchi admin, moderator yoki tasdiqlangan haydovchi rolini o‘ziga bera olmasin.
+Usta/haydovchi bo‘lish uchun ariza, pending/approved/rejected/suspended holatlari va admin tekshiruvi bo‘lsin.
+Tasdiqlash belgisi nimani anglatishini ko‘rsat: telefon, shaxs yoki kasbiy hujjat tekshirilganligi.
+Admin huquqi server orqali va audit bilan berilsin; birinchi admin uchun xavfsiz bootstrap ko‘rsatmasi bo‘lsin.
+
+5. RO‘YXATDAN O‘TISH
+
+Telefon va haqiqiy SMS OTP orqali kirishni tayyorla.
+Firebase SMS region policy, authorized domains, reCAPTCHA, billing va provider mavjudligi bo‘yicha sozlash ko‘rsatmasini ber. +992 ga SMS yetib borishini tekshirmasdan tayyor deb aytma.
+Mahalliy developmentda emulator/test raqamlari bilan ishlash mumkin.
+Email/parol muqobil kirishi ham bo‘lsin; developmentdagi email hisoblarini avtomatik “telefon tasdiqlangan” deb belgilama.
+Profil: ism, avatar, shahar, til va kerakli rol.
+Qidiruvni mehmon ko‘ra olsin. Buyurtma, ariza, chat va e’lon uchun hisob kerak.
+Telefon, aniq uy manzili va shaxsiy hujjatlarni umumiy profilga chiqarma.
+
+6. DIZAYN VA NAVIGATSIYA
+
+Telefon ekranida toza, tez va tushunarli interfeys yarat.
+Asosiy navigatsiya: Bosh sahifa, Ish, Ustalar, Taksi, Profil.
+Buyurtmalar va xabarlar barcha modullardan oson ochilsin.
+Desktopda qulay sidebar yoki yuqori navigatsiya ishlasin.
+Bosh sahifada uchta xizmat kartasi, qidiruv va foydalanuvchining faol ish/buyurtmalari bo‘lsin.
+Yirik bosish joylari, o‘qiladigan shrift, tushunarli statuslar, loading, empty, success va error holatlari bo‘lsin.
+Taksi sahifasida xarita va pastki boshqaruv paneli; ish va ustalarda qulay kartalar, filtrlar va ro‘yxatlar ishlat.
+Accessibility, klaviatura orqali foydalanish va kam trafik sarflashga e’tibor ber.
+Interfeysdagi har bir asosiy tugma ishlaydigan amalga ulangan bo‘lsin.
+
+7. ISH E’LONLARI
+
+Ish beruvchi e’lon yaratishi, tahrirlashi, yopishi va arizalarni ko‘rishi mumkin.
+E’lon maydonlari:
+- lavozim va tashkilot;
+- kategoriya;
+- shahar, tuman, ish joyi;
+- ish tavsifi, vazifalar, talablar;
+- maosh oralig‘i yoki “kelishiladi”;
+- maosh davri: oy, kun, soat yoki loyiha;
+- ish turi: doimiy, vaqtinchalik, smenali, masofaviy;
+- jadval, tajriba va tillar;
+- bog‘lanish usuli va e’lon muddati.
+
+Ish qidiruvchi shahar, kategoriya, maosh, tajriba, ish turi va masofaviy ish bo‘yicha filtrlashi mumkin.
+Saqlangan e’lonlar, qisqa profil, CV yuklash va ariza berish bo‘lsin.
+Bir foydalanuvchi bir e’longa takroran ariza yubormasin.
+Arizalar: submitted, viewed, shortlisted, contacted, hired, rejected, withdrawn.
+O‘z arizasini faqat nomzod, tegishli ish beruvchi va vakolatli moderator ko‘ra olsin.
+CV umumiy ochiq fayl bo‘lmasin.
+Ishga qabul qilish holatini xizmat buyurtmasi bilan aralashtirma.
+E’lonlar: draft, pending_review, published, paused, closed, rejected, expired.
+Firibgarlik yoki noqonuniy kontent haqida report yuborish imkonini ber.
+
+8. USTALAR KATALOGI
+
+Boshlang‘ich kategoriyalar:
+elektrik, santexnik, maishiy texnika, konditsioner, kompyuter/telefon, avtomobil, qurilish/ta’mir, tozalash, yuk tashish.
+Admin kategoriyalarni qo‘sha, yashira va tartibini o‘zgartira olsin.
+
+Usta profili:
+ism yoki servis nomi, xizmat kategoriyalari, tajriba, xizmat hududi, ishlash vaqti, narx tavsifi, portfolio, tekshiruv holati, tugallangan buyurtmalar, haqiqiy sharhlar.
+“Ish qabul qiladi” holati GPS kuzatuvi bilan bir xil tushuncha bo‘lmasin.
+Filtrlar: hudud, kategoriya, xizmat narxi, mavjudlik va sharhlar.
+Qidiruvni butun bazani brauzerga yuklab bajarishga majburlama. Backend filtrlari, pagination va mos qidiruv adapteridan foydalan.
+
+9. USTA BUYURTMASINI YARATISH
+
+Mijoz:
+- kategoriya va muammoni tanlaydi;
+- tavsif va ixtiyoriy muammo rasmlarini qo‘shadi;
+- shahar/tuman va maxfiy aniq manzilni kiritadi;
+- kerakli vaqt yoki “hozir”ni tanlaydi;
+- budjet yoki “narxni kelishamiz”ni belgilaydi;
+- naqd yoki bevosita o‘tkazma to‘lovini tanlaydi.
+
+Ikki buyurtma usuli bo‘lsin:
+A) Muayyan ustaga so‘rov: usta taklif beradi, mijoz narx va vaqtni tasdiqlaydi.
+B) Ochiq buyurtma: mos hudud va kategoriyadagi tasdiqlangan ustalar ko‘radi; qabul qilish shartlari oldindan ko‘rsatiladi.
+
+Ochiq ro‘yxatda tuman va muammo chiqsin, lekin to‘liq uy manzili, telefon va shaxsiy rasmlar oshkor bo‘lmasin.
+Aniq manzil va mijoz kontakti faqat biriktirilgan ustaga ochilsin.
+Ikki usta bir buyurtmani bir vaqtda olmasligi server tranzaksiyasi orqali ta’minlansin.
+Tugmani qayta bosish yoki network retry ikkinchi buyurtma yoki takroriy qabul yaratmasin.
+
+10. USTA BUYURTMASINING HOLATLARI
+
+Asosiy oqim:
+open → assigned → en_route → arrived → in_progress → submitted_for_review → completed.
+
+Muqobil holatlar:
+cancelled va disputed.
+
+Har bir transition uchun serverda oldingi holat, bajaruvchi rol va buyurtmaga aloqadorlik tekshirilsin.
+Mijoz yaratadi va tegishli taklifni tasdiqlaydi.
+Biriktirilgan usta yo‘lga chiqish, kelish va ishni boshlashni belgilaydi.
+Usta ish tugagach natijani tekshiruvga yuboradi.
+Mijoz qabul qilgach buyurtma completed bo‘ladi.
+Mijoz muammo bo‘lsa izoh bilan tuzatish talab qilishi mumkin; status nazoratli ravishda in_progress ga qaytadi yoki dispute ochiladi.
+Usta yolg‘iz o‘zi mijoz nomidan ishni qabul qila olmasin.
+Bekor qilish, qayta ochish va admin aralashuvi sababi bilan tarixga yozilsin.
+Mijoz javob bermasa eslatma va moderatorga yo‘naltirish bo‘lsin; sukutni avtomatik “pul to‘landi” deb hisoblama.
+Tasdiqlangan narx, diagnostika haqi va tashrif vaqti ikkala tomonga ko‘rinsin.
+Qo‘shimcha ish yoki narx o‘zgarishi mijoz tasdiqlamaguncha kuchga kirmasin.
+
+11. NATIJA RASMLARI
+
+Usta “Ishni tugatdim” amalini bajarishdan oldin:
+- kamida bitta natija rasmi;
+- qisqa bajarilgan ish izohi;
+- yakuniy kelishilgan summa bo‘lishi kerak.
+
+Oldin/keyin rasmlarini alohida belgilash mumkin bo‘lsin.
+Telefon kamerasi va galereyadan yuklash, preview, progress, retry va compression ishlasin.
+Tavsiya etilgan chegara: har fayl 10 MB, buyurtma bo‘yicha 10 ta rasm; limitlar konfiguratsiyadan o‘zgarsin.
+Formatlar va haqiqiy fayl turi tekshirilsin; telefon HEIC formatini konvertatsiya qilish yoki tushunarli xato bilan boshqar.
+Yuklanayotgan yoki muvaffaqiyatsiz rasmni tayyor dalil deb qabul qilma.
+Backend kamida bitta tegishli, muvaffaqiyatli saqlangan va yakunlangan upload mavjudligini tekshirsin.
+Natija rasmlari odatda mijoz, biriktirilgan usta va vakolatli moderator uchun maxfiy bo‘lsin.
+Mijoz roziligisiz ularni ustaning ochiq portfoliosiga ko‘chirma.
+EXIF joylashuv ma’lumotlarini olib tashla. Maxfiy fotosuratlarga hammaga ochiq, uzoq muddatli download link bermagin.
+
+12. BEVOSITA TO‘LOV
+
+To‘lovning asosiy qoidasi: mijoz va ijrochi o‘zlari kelishadi. Mijoz naqd yoki bevosita bank/karta o‘tkazmasi bilan ijrochiga to‘laydi.
+
+Boshlang‘ich versiyada platforma:
+- mijoz pulini qabul qilmaydi;
+- escrow yoki ichki hamyon yaratmaydi;
+- avtomatik komissiya yechmaydi;
+- tashqi bank o‘tkazmasini API tasdig‘isiz tekshirilgan deb ko‘rsatmaydi.
+
+Ish holati va to‘lov holatini ajrat:
+paymentMethod: cash yoki direct_transfer.
+paymentStatus: unpaid, reported, confirmed_by_parties, disputed.
+payerReportedAt va recipientConfirmedAt kabi tasdiqlarni alohida saqla.
+
+Naqd to‘lovda mijoz to‘laganini, ijrochi olganini tasdiqlaydi.
+O‘tkazmada mijoz to‘laganini bildiradi, ijrochi haqiqatan olganini tasdiqlaydi.
+Ikkala tasdiq bo‘lgach “Tomonlar to‘lovni tasdiqladi” ko‘rsat.
+Chek rasmi ixtiyoriy, maxfiy va bank tekshiruvi o‘rnini bosmaydi.
+Karta/bank rekvizitini saqlash majburiy bo‘lmasin; tomonlar buyurtma chatida kelishishi mumkin.
+Platforma tarixini rasmiy bank yoki fiskal chek deb nomlama.
+Ish completed bo‘lishi paymentStatus ni avtomatik o‘zgartirmasin.
+Admin ham dalilsiz bank to‘lovini “bank tasdiqladi” deb belgilay olmasin.
+
+13. TAKSI: YO‘LOVCHI JARAYONI
+
+Yo‘lovchi:
+- joylashuvga ruxsat beradi yoki boshlang‘ich manzilni qo‘lda kiritadi;
+- boradigan manzilni tanlaydi;
+- xaritada nuqtalar va mavjud bo‘lsa haqiqiy yo‘l marshrutini ko‘radi;
+- tarif, taxminiy narx va kelish vaqtini ko‘radi;
+- naqd yoki bevosita o‘tkazmani tanlaydi;
+- izoh qo‘shadi va buyurtma beradi;
+- mos haydovchi qidirilishini kuzatadi;
+- qabul qilgan haydovchi, avtomobil, davlat raqami va reytingini ko‘radi;
+- haydovchining yangilangan joylashuvi va kelishini kuzatadi;
+- safar yakunida tomonlar kelishgan summani to‘laydi va baho beradi.
+
+Bir yo‘lovchida boshlang‘ich versiyada bir vaqtning o‘zida bitta faol safar bo‘lsin.
+“Haydovchi topilmadi” va qidiruv timeouti uchun qayta qidirish yoki bekor qilish amallari bo‘lsin.
+GPS ruxsati berilmasa qo‘lda manzil bilan buyurtma ishlasin.
+Xarita, internet yoki routing xatosida tushunarli fallback ko‘rsat.
+
+14. TAKSI: HAYDOVCHI JARAYONI
+
+Haydovchi arizasi:
+ism, telefon, avtomobil markasi/modeli, rang, davlat raqami, zarur tekshiruv hujjatlari.
+Hujjatlar maxfiy. Admin approved qilmaguncha real buyurtma qabul qilmasin.
+
+Haydovchi online/offline holatini boshqaradi.
+Yaqin mos taklifda olib ketish hududi, masofa, yo‘nalish va taklif etilgan narx ko‘rinsin.
+Aniq kontaktlar faqat biriktirilgach ochilsin.
+Qabul qilish, olib ketish joyiga borish, “Keldim”, safarni boshlash va tugatish amallari bo‘lsin.
+Safar boshlanishini yo‘lovchining PIN kodi yoki ekvivalent tasdig‘i bilan bog‘la; PIN serverda tekshirilsin.
+Haydovchi bir vaqtning o‘zida bitta faol safarni bajaradi.
+Naqd va o‘tkazma tasdiqlari usta modulidagi bevosita to‘lov modelidan foydalansin.
+Haydovchi kabinetida safarlar tarixi va tomonlar tasdiqlagan summalar yig‘indisi chiqsin; uni platformadagi hamyon balansidek ko‘rsatma.
+
+15. TAKSI DISPATCH VA HOLATLAR
+
+Safar holatlari:
+searching → driver_assigned → driver_arriving → driver_arrived → in_progress → completed.
+Muqobil holatlar: cancelled, no_driver_found.
+Shikoyat/dispute alohida yozuv bo‘lsin; completed safarni yashirincha o‘zgartirmasin.
+
+Dispatch:
+- server mos shahar, tarif, approved holat va faol safarsiz haydovchilarni tanlaydi;
+- fresh location va online presence tekshiriladi;
+- avval kichik radiusda qidiradi, keyin konfiguratsiyaga ko‘ra kengaytiradi;
+- taklifga amal qilish muddati va offer ID beradi;
+- bitta haydovchini bitta safarga atomik biriktiradi;
+- ride va driver bandlik reservationlarini bitta server tranzaksiyasida tekshiradi;
+- kech qabul, takroriy bosish, yo‘lovchi bekor qilishi va ikki haydovchi race holatini boshqaradi.
+
+Firestore source of truth bo‘lsin; RTDB GPS/presence uchun ishlasin.
+Realtime Database va Firestore o‘rtasida bitta atomik tranzaksiya bor deb taxmin qilma.
+Qisqa muddatli live locationdan geohash/TTL bilan cheklangan dispatch indeksini yaratish mumkin; butun haydovchilar bazasini doimiy skan qilma.
+Assignment token/version eskirgan joylashuv yoki kechikkan client yozuvini aniqlashga yordam bersin.
+Haydovchi yetib kelishidan oldin bekor qilsa, yo‘lovchiga xabar ber va qayta qidirishni boshqar.
+Boshlangan safar oddiy yangi dispatchga qaytmasin; maxsus yordam oqimi bo‘lsin.
+Boshlang‘ich tariflar admin sozlamasi yoki aniq demo qiymatlari bo‘lsin, Tojikistondagi haqiqiy bozor narxlari deb taqdim etilmasin.
+
+16. CAVI MAPS INTEGRATSIYASI, TAKSI NARXI VA GPS
+
+Cavi Maps uchun talablar:
+- Avval mavjud repo, komponentlar, konfiguratsiya, qidiruv, routing va lokatsiya kodini tekshir. Tashqi URLni tayyor SDK yoki routing API deb hisoblama.
+- Xarita modulini imkon bo‘lsa mavjud source orqali umumiy komponent/package sifatida ishlat. Mavjud standalone Cavi Maps sahifasini buzma.
+- CAVI_MAPS_PUBLIC_URL va zarur API manzillarini konfiguratsiyada saqla. Vaqtinchalik GitHub Pages manzili doimiy domenga almashtirilganda butun platforma kodini o‘zgartirish kerak bo‘lmasin.
+- Integratsiya uchun selectLocation, setMarkers, setRoute, fitBounds, clearOverlays kabi haqiqiy metod/event shartnomasini yarat yoki mavjudiga moslashtir.
+- Xarita nuqtasi orqali olingan latitude/longitude formaga uzatilsin; geocoding natijalari, markerlar va routing koordinatalari bir xil schema bilan ishlasin. GeoJSON/routingdagi longitude-latitude tartibini tekshir.
+- Taksi uchun olib ketish/borish nuqtalari, biriktirilgan haydovchi markeri va marshrut qatlami bo‘lsin.
+- Usta va ish modullarida maxfiylikka mos xizmat hududi hamda ish joyi markerlarini ko‘rsat.
+- Maxfiy uy manzili va live driver GPS umumiy Cavi Maps katalogiga chiqmasin.
+- Cavi Maps ichidagi mavjud geolocation boshqaruvi bilan taksi GPSni muvofiqlashtir; ortiqcha parallel watchPosition yoki duplicate listener yaratma.
+- Faqat iframe bilan ulangan ko‘rinishni to‘liq integratsiya deb hisoblama. Iframe zarur bo‘lsa, uning ikki tomoni uchun typed postMessage bridge, qat’iy allowed origins, payload validation va ruxsatlarni amalga oshir. Secret yoki auth tokenlarni URLga qo‘shma.
+- Source/SDK/APIga kirish yetishmasa, adapter va sozlash joylarini tayyorla, aynan qaysi ulanish qolganini yoz. Cavi Maps tekshirilmasdan boshqa xarita bilan almashtirilmasin.
+- Cavi Mapsning mavjud tashqi data, tile, qidiruv va routing xizmatlari uchun ham litsenziya, attribution, quota va ishonchlilik talablarini tekshir.
+
+Narx hisoblash:
+boshlang‘ich haq + yo‘l masofasi + zarur bo‘lsa vaqt/kutish komponenti.
+Minimum narx, tarif va konfiguratsiya versiyasi serverda saqlansin.
+Yo‘lovchi tasdiqlagan narx yoki narx hisoblash qoidasi safarga yozilsin.
+Kelishilgan narx o‘zgarishini yo‘lovchi qayta tasdiqlasin.
+Boshlang‘ich versiyada tushuntirilmagan surge pricing yoki yashirin to‘lov qo‘shma.
+
+Haqiqiy routing API bo‘lmasa, to‘g‘ri chiziq masofasini yo‘l uzunligi deb, taxminiy vaqtni jonli ETA deb ko‘rsatma.
+Xarita, manzil qidiruvi va routing alohida adapterlar bo‘lsin.
+Providerning attribution, litsenziya, API key restrictions va quota talablarini hisobga ol.
+Ommaviy bepul tile/geocoding serverlarini cheksiz production xizmat deb ishlatma.
+
+GPS faqat haydovchi roziligi bilan kerakli online/safar holatlarida ishlasin.
+Yangilashni har 3–8 soniya yoki sezilarli siljishda sozlanadigan qilib, batareya va trafikni hisobga olib boshqar.
+updatedAt, accuracy, freshness va ulanish holatini saqla.
+Lokatsiya eskirsa “Oxirgi joylashuv” va vaqtini ko‘rsat; harakatlanayotgan soxta marker chizma.
+GPS/presence yo‘qolgan haydovchiga yangi safar bermagin.
+Offline qilish yoki kerakli sessiya tugashi kuzatuvni to‘xtatsin.
+
+PWA/brauzerda ekran qulflanganda yoki ilova fonda bo‘lganda GPS davom etishini kafolatlama. Service worker bilan fon GPSni soxta yechim qilib ko‘rsatma.
+Pilot driver web rejimining cheklovini onboardingda tushuntir.
+Production uchun native driver ilovasi bosqichini belgilab, OS ruxsatlari, background location, active-trip tiklash va Android/iOS qurilma testlarini alohida qabul mezoniga kirit.
+Native qism amalga oshirilmagan bo‘lsa, production fon kuzatuvi tayyor deb aytma.
+
+17. CHAT VA BILDIRISHNOMALAR
+
+Buyurtma, safar va ish arizasi kontekstida private chat bo‘lsin.
+Matn va ruxsat berilgan rasm attachmentlari, yuborilgan vaqt, read holati, pagination va report ishlasin.
+Chatga faqat suhbat qatnashchilari va aniq vakolatli moderator kira olsin.
+Moderatsiya kirishi auditda qayd etilsin.
+Yangi ariza, taklif, qabul, bekor qilish, natija yuborilishi, mijoz tasdig‘i va to‘lov qaydi haqida notification bo‘lsin.
+Bildirishnoma ixtiyoriy ruxsat bilan yoqilsin; rad etilsa ilova ichidagi markaz ishlasin.
+Push/lock-screen matnida maxfiy manzil, hujjat yoki to‘liq bank rekviziti chiqmasin.
+Dublikat pushlar va qayta yuborishlar idempotency bilan boshqarilsin.
+
+18. SHARHLAR VA SHIKOYATLAR
+
+Sharh faqat tegishli yakunlangan xizmat yoki safar qatnashchisidan bo‘lsin.
+Bir buyurtma va reviewer uchun bitta sharh.
+Yulduzlar 1–5, izoh va zarur report.
+Reyting serverda tasdiqlangan sharhlardan hisoblanadi.
+Foydalanuvchi o‘z reytingini yoki bajarilgan buyurtmalar sonini yozib o‘zgartira olmasin.
+Moderator sabab bilan yashira olsin; tarix yo‘qolmasin.
+Shikoyat mavzusi: kelmaslik, sifatsiz ish, narx kelishmovchiligi, to‘lov, xavfsizlik, soxta e’lon.
+Platforma tashqi naqd/o‘tkazmani avtomatik qaytarib bera oladi degan interfeys yaratma.
+
+19. TASHKILOT KABINETI
+
+Xususiy yoki davlat tashkiloti uchun:
+tashkilot profili, manager/member rollari, xodim taklif qilish, ish e’lonlari, tashkilot nomidan xizmat buyurtmasi, topshiriqlar va tarix.
+Har bir tashkilotning ma’lumotlari boshqa tashkilotlardan izolyatsiya qilinsin.
+Boshlang‘ich versiyada tashkilotning ichki kabineti yetarli.
+Davlatning rasmiy xizmatlari, reyestrlari va hujjat chiqarishini real ruxsatli integratsiya bo‘lmaguncha ishlaydigan funksiya deb ko‘rsatma.
+
+20. ADMIN PANEL
+
+Umumiy ko‘rsatkichlar:
+faol foydalanuvchilar, e’lonlar, arizalar, xizmat buyurtmalari, safarlar, shikoyatlar.
+Demo sonlar real biznes statistikasi bilan aralashmasin.
+
+Admin:
+- foydalanuvchi va tashkilotlarni ko‘radi;
+- usta/haydovchi arizalarini tekshiradi;
+- rollarni vakolat doirasida boshqaradi;
+- e’lonlarni moderatsiya qiladi;
+- kategoriyalar, shaharlar, tariflar va limitlarni sozlaydi;
+- shikoyatlarni ko‘rib chiqadi;
+- sabab bilan block/unblock qiladi;
+- ruxsatli, maxfiylikka mos eksport oladi.
+
+Barcha muhim admin amallari auditga yozilsin.
+Admin panelning UI himoyasi bilan cheklanma: server ruxsatlari, database va storage rules bo‘lsin.
+Bloklangan foydalanuvchining davom etayotgan buyurtma/safari uchun alohida xavfsiz yordam oqimi bo‘lsin.
+
+21. MA’LUMOTLAR MODELI
+
+Kamida quyidagi mantiqiy entitylarni ajrat:
+users, publicProfiles, providerApplications, technicianProfiles, driverProfiles,
+organizations va memberships,
+jobPosts va jobApplications,
+serviceOrders, serviceOffers, orderEvents va attachments,
+taxiRides, driverReservations, dispatchOffers va rideEvents,
+chats va messages, notifications, reviews, reports,
+categories, cities, tariffs, platformSettings, auditLogs.
+
+Firebase Auth identity va confidentialUsers/providerDocuments kabi maxfiy ma’lumotlarni public profillardan ajrat.
+Har bir entityda tegishli owner/participant/org ID, createdAt, updatedAt va zarur version bo‘lsin.
+Buyurtma eventlari server tomonidan qo‘shiladigan tarix bo‘lsin.
+Storage obyektlariga owner, tegishli order/ride/application va visibility bog‘la.
+Statuslar, enumlar, pul va vaqt formatlari uchun umumiy type/schema yarat.
+RTDB presence va live location uchun alohida rules, session/assignment cheklovi va eskirgan yozuvlarni tozalash siyosati bo‘lsin.
+
+22. XAVFSIZLIK VA ISHONCHLI YOZUVLAR
+
+Serverda authentication, role, ownership, status transition va payload validatsiyasi bo‘lsin.
+Assignment, narx tasdig‘i, completion, payment confirmation va rating amallari himoyalansin.
+Backend Admin SDK security rulesni chetlab o‘tishini hisobga olib, backendning o‘zida ruxsatlarni tekshir.
+Rasmlar, CV, hujjatlar va chat fayllariga fayl turi, hajm va qatnashchi asosida ruxsat qo‘llanilsin.
+Default deny rules yarat.
+Server timestamp, idempotency key va optimistic version tekshiruvlaridan foydalan.
+Qo‘llab-quvvatlanadigan joylarda App Check, server rate limit va SMS abuse himoyasini tayyorla.
+Private order rasmlari va live GPSni PWA cachega qo‘shma.
+Maxfiy ma’lumotlarni logga yoki ommaviy analyticsga yozma.
+Retention/deletion va audit saqlash siyosatini hujjatlashtir.
+Keraksiz hujjat yoki joylashuv ma’lumotini yig‘ma.
+
+23. TEZLIK, OFFLINE VA XARAJAT
+
+Ro‘yxatlarni pagination bilan och.
+Faol ekranlarda kerakli realtime listenerlarni ishlat, ekran yopilganda unsubscribe qil.
+Chatni butun tarix bilan yuklama.
+Rasm preview/thumbnail, lazy loading va compression ishlasin.
+Geografik qidiruvda radius/geohash va haqiqiy masofa filtri bo‘lsin.
+Order/safar qabul qilish, yakunlash va to‘lov tasdiqlarini offline holatda muvaffaqiyatli deb ko‘rsatma.
+Offline draft mumkin, lekin server tasdig‘isiz real buyurtma ochildi deb yozma.
+Internet qaytganda foydalanuvchi haqiqiy holatni ko‘rsin.
+
+Firebase, SMS, xarita va routingni cheksiz bepul deb va’da qilma.
+READMEda billing talab qiladigan komponentlar, quota, limit va taxminiy xarajat formulalarini ko‘rsat.
+Budjet alertini qat’iy xarajat limiti deb taqdim etma.
+Funksiya scaling limitlari, rasm cheklovlari va query limitlarini konfiguratsiyala.
+
+24. DEMO VA HAQIQIY INTEGRATSIYA
+
+Development uchun turli rollardagi sun’iy akkauntlar, e’lonlar va sinov buyurtmalarini tayyorla.
+Demo ma’lumotlar alohida muhitda va aniq “Demo” bilan belgilansin.
+Demo taxi harakati ishlatilsa, bu simulyatsiya ekanini ko‘rsat va productiondan olib tashla.
+Real hisobda soxta SMS, soxta haydovchi, soxta bank tasdig‘i yoki soxta tayyor buyurtma bo‘lmasin.
+
+API yoki credential yetishmasa:
+- interfeys va adapterlarni tayyorla;
+- mavjud qismlarni emulator bilan tekshir;
+- yetishmayotgan integratsiyani aniq ko‘rsat;
+- sozlash ko‘rsatmasini ber;
+- funksiyani bajarilgandek ko‘rsatma.
+
+25. TESTLAR VA QABUL MEZONLARI
+
+Quyidagi oqimlarni tekshir va natijasini yoz:
+A) Employer e’lon joylaydi; boshqa hisob qidirib ariza beradi; employer uni ko‘radi va statusini o‘zgartiradi.
+B) Customer buyurtma yaratadi; technician oladi, boradi, boshlaydi, natija rasmi yuklaydi; customer ishni qabul qiladi.
+C) Natija rasmi yo‘q yoki upload yakunlanmagan bo‘lsa completion submission rad etiladi.
+D) Ikki technician bir vaqtning o‘zida qabul qilsa, bittasi muvaffaqiyatli bo‘ladi.
+E) Customer to‘lovni bildiradi; tegishli recipient tasdiqlaydi; begona hisob aralasha olmaydi.
+F) Payment status va work status mustaqil ishlaydi.
+G) Yo‘lovchi safar yaratadi; approved haydovchi oladi; PIN bilan boshlaydi; tugatadi va tomonlar to‘lovni qayd etadi.
+H) Ikki driver bitta ride ni ololmaydi; bitta driver ikki faol ride ga biriktirilmaydi.
+I) Eskirgan, offline yoki suspended driver yangi safar olmaydi.
+J) Begona foydalanuvchi private chat, CV, hujjat, aniq manzil, GPS va natija rasmlarini o‘qiy olmaydi.
+K) Oddiy hisob admin rolini berolmaydi va protected status/reytingni to‘g‘ridan-to‘g‘ri yozolmaydi.
+L) Refresh, retry, bekor qilish va uzilgan upload holatlari ma’lumotni buzmaydi.
+M) Tillarning asosiy oqimlari, telefon layouti, build va typecheck ishlaydi.
+N) Cavi Mapsdan nuqta tanlash, marker/marshrut qatlamlari, koordinata tartibi, private location cheklovlari va vaqtinchalik URL konfiguratsiyasi tekshiriladi.
+
+Ruxsat qoidalarini Firebase Emulator Suite bilan sinovdan o‘tkaz.
+Concurrency, idempotency va rol tekshiruvlari uchun mazmunli testlar yoz.
+Native fon GPS uchun haqiqiy qurilma testi bajarilmasa, bu mezonni “tekshirilmagan” deb yoz.
+
+26. TOPSHIRILADIGAN NATIJA VA ISH TARTIBI
+
+Natijaga qo‘sh:
+- to‘liq frontend va backend source;
+- database, storage va realtime rules;
+- zarur indexes;
+- emulator konfiguratsiyasi;
+- demo seed va xavfsiz admin bootstrap;
+- .env.example va server secrets sozlash ko‘rsatmasi;
+- Firebase Hosting/build konfiguratsiyasi;
+- Cavi Maps adapteri, integratsiya shartnomasi va konfiguratsiyasi;
+- mahalliy ishga tushirish, test va deploy ko‘rsatmalari;
+- architecture, data model va status transition hujjati;
+- bajarilgan va tashqi sozlamani kutayotgan funksiyalar ro‘yxati;
+- real taksi uchun native driver ilovasi bosqichi va aniq qolgan talablar.
+
+Ishni ketma-ket bajar:
+1) Mavjud loyiha va muhitni tekshir; qisqa reja tuz.
+2) Umumiy hisob, rollar, navigatsiya, ma’lumot modeli va ruxsatlarni yarat.
+3) Ish modulini boshidan oxirigacha ishlat.
+4) Usta buyurtmasi, rasm, mijoz qabul qilishi va bevosita to‘lovni ishlat.
+5) Taksi matching, reservation, GPS/presence va safar jarayonini ishlat.
+6) Admin, chat, notification va tashkilot kabinetini yakunla.
+7) Muhim oqimlar va xavfsizlikni tekshir, xatolarni tuzat.
+8) Ishlaydigan preview yoki mahalliy ishga tushirish yo‘lini ber.
+
+Faqat reja yoki dizayn bilan to‘xtama; ushbu muhitda amalga oshirish mumkin bo‘lgan qismlarni source, backend va testlargacha yakunla.
+Katta loyiha bir bosqichga sig‘masa, ishlaydigan yakunlangan oqimlar bo‘yicha davom et va talablarni kuzatib bor.
+Tashqi account, API, billing, native SDK yoki qurilma yetishmasligini yashirma.
+Bajarilmagan funksiyani, bajarilmagan testni yoki qilinmagan deployni tayyor deb aytma.
+Maxfiy kalitni kodga qo‘shma va userga ommaviy yuborma.
+Yakuniy hisobotda nima ishlashi, qanday tekshirilgani va live ishga tushirish uchun qaysi tashqi sozlamalar qolganini aniq ayt.
