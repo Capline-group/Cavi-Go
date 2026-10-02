@@ -1,8 +1,11 @@
-import {useId} from 'react';
 import type {Lang} from './i18n';
 
 export const say=(lang:Lang,tg:string,ru:string,uz:string)=>({tg,ru,uz})[lang];
 const paths:Record<string,string>={
+ basket:'M3 9h18l-2 12H5zM7 9l3-6m7 6-3-6M9 13v4m6-4v4',
+ medical:'M8 3h8v5h5v8h-5v5H8v-5H3V8h5z',
+ flower:'M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6M9 5q3-6 6 0 6-1 5 5 2 5-4 5-4 5-8 0-6 0-4-5-1-6 5-5M12 16v6M12 20l-5-2',
+ headphones:'M4 13v-2a8 8 0 0 1 16 0v2M4 12h4v9H4zM16 12h4v9h-4z',
  settings:'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1z',
  grid:'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
  plus:'M12 4v16M4 12h16',
@@ -40,15 +43,7 @@ const paths:Record<string,string>={
  filter:'M3 6h18M3 12h18M3 18h18M7 4v4M16 10v4M10 16v4'
 };
 export function Icon({name,className=''}:{name:string;className?:string}){return <svg className={'icon '+className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]||paths.info}/></svg>}
-export function Car({large=false,variant='economy'}:{large?:boolean;variant?:string}){return <svg className={'car-art '+(large?'large':'')} viewBox="0 0 180 90" aria-hidden="true"><ellipse cx="91" cy="75" rx="73" ry="7" fill="#123b2910"/><path d="M17 57l12-17 32-5 20-18h44l23 25 17 8v18H15z" fill={variant==='business'?'#263932':variant==='taxi'?'#f4c739':'#eef1ef'} stroke="#315442" strokeWidth="2"/><path d="M67 35l18-14h35l15 20-74-2z" fill="#315442"/><path d="M100 21v19M27 48l130 3" stroke="#fff" strokeWidth="2"/><path d="M23 53h15m116 1h9" stroke="#bac772" strokeWidth="5"/><circle cx="48" cy="67" r="14" fill="#243c31"/><circle cx="48" cy="67" r="7" fill="#d9e0db"/><circle cx="137" cy="67" r="14" fill="#243c31"/><circle cx="137" cy="67" r="7" fill="#d9e0db"/></svg>}
-
-export function ServiceArt({name}:{name:string}){
- const id=useId().replace(/:/g,'');
- if(name==='taxi')return <Car variant="taxi"/>;
- return <svg className="service-art" viewBox="0 0 120 110" aria-hidden="true"><defs><linearGradient id={id+'g'} x2="1" y2="1"><stop stopColor="#159566"/><stop offset="1" stopColor="#003d29"/></linearGradient><linearGradient id={id+'y'} x2=".8" y2="1"><stop stopColor="#ffe06a"/><stop offset="1" stopColor="#e69908"/></linearGradient><linearGradient id={id+'b'} x2="0" y2="1"><stop stopColor="#77d3e1"/><stop offset="1" stopColor="#12607b"/></linearGradient></defs><ellipse cx="60" cy="99" rx="40" ry="5" fill="#003d2912"/>
- {name==='jobs'?<><path d="M43 31V18q0-8 8-8h19q8 0 8 8v13" fill="none" stroke={'url(#'+id+'g)'} strokeWidth="8"/><rect x="19" y="28" width="84" height="67" rx="12" fill={'url(#'+id+'g)'}/><path d="M20 38q40 31 81 0v13q-40 27-81 0" fill="#147b57"/><rect x="55" y="49" width="13" height="22" rx="4" fill="#edeee5"/><rect x="59" y="54" width="5" height="8" rx="2" fill="#c8b46c"/></>:
- name==='services'?<><g transform="rotate(-39 60 56)"><path d="M47 12a24 24 0 1 0 26 0v19H47z" fill={'url(#'+id+'y)'}/><rect x="50" y="49" width="21" height="48" rx="9" fill={'url(#'+id+'g)'}/><circle cx="61" cy="85" r="4" fill="#d7d5b6"/></g><g transform="rotate(40 60 57)"><path d="M55 6h10l4 17-5 7v43h-9V30l-4-7z" fill={'url(#'+id+'y)'}/><rect x="48" y="64" width="23" height="37" rx="8" fill={'url(#'+id+'g)'}/><path d="M54 71v20m10-20v20" stroke="#199569" strokeWidth="3"/></g></>:
- name==='delivery'?<><circle cx="29" cy="84" r="15" fill="#26352d"/><circle cx="29" cy="84" r="7" fill="#ccd3ca"/><circle cx="93" cy="84" r="15" fill="#26352d"/><circle cx="93" cy="84" r="7" fill="#ccd3ca"/><path d="M21 64h38l14-38h12l9 48H62q-8 16-21 4H16z" fill={'url(#'+id+'y)'}/><path d="M53 55h-29" stroke="#30483a" strokeWidth="8" strokeLinecap="round"/><path d="M75 27l-4-15H61" stroke="#315343" strokeWidth="6" fill="none" strokeLinecap="round"/><rect x="13" y="33" width="33" height="28" rx="6" fill="#c7653f"/><path d="M27 34v26" stroke="#f0b183" strokeWidth="7"/><path d="M89 41l4 8" stroke="#fff8dd" strokeWidth="7" strokeLinecap="round"/></>:
- <><path d="M84 39l13 12v30q0 15-12 15t-12-12V64" fill="none" stroke="#264b3a" strokeWidth="6"/><rect x="27" y="9" width="51" height="89" rx="8" fill={'url(#'+id+'g)'}/><rect x="34" y="16" width="37" height="30" rx="4" fill="#122d25"/><rect x="38" y="20" width="29" height="20" rx="3" fill={'url(#'+id+'b)'}/><path d="M54 51c-3 10-11 14-11 22a11 11 0 0 0 22 0c0-7-9-14-11-22" fill={'url(#'+id+'y)'}/><rect x="23" y="92" width="59" height="8" rx="3" fill="#064331"/><path d="M83 33l14 14-4 7-14-13z" fill="#233e30"/></>}
- </svg>
+export function Car({large=false,variant='economy'}:{large?:boolean;variant?:string}){
+ const van=variant==='minivan';
+ return <svg className={'car-art '+(large?'large':'')} viewBox="0 0 96 44" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={van?'M7 29l3-16q1-5 7-5h49l10 11 12 5v10H7z':'M7 29l5-9 17-3 12-9h25l12 12 10 4v10H7z'} fill={variant==='business'?'#26382f':'#edf0ed'}/><path d={van?'M18 12h45l8 9H16z':'M34 18l10-7h19l9 9z'} fill={variant==='business'?'#a9b9ae':'#c6d5cc'}/><path d="M51 12v8M34 24h7M60 25h6M9 25h8M80 25h6"/><circle cx="25" cy="33" r="7" fill="#fff"/><circle cx="73" cy="33" r="7" fill="#fff"/><circle cx="25" cy="33" r="2" fill="currentColor"/><circle cx="73" cy="33" r="2" fill="currentColor"/></svg>
 }
