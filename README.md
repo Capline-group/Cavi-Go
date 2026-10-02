@@ -6,7 +6,7 @@ Source: public `Capline-group/Cavi-Go`, as requested by the owner. Firebase proj
 
 Responsive Tajik/Russian/Uzbek interface based on the supplied green/white references: Home, Taxi, Masters, Work, Delivery, Fuel and Profile. Reference names, ratings, balances, prices, restaurants, drivers and arrival times are not seeded as real data.
 
-- Home links to all five service areas and partner applications. No fabricated active trip.
+- Home follows the supplied layout: a logo/profile header, active orders card, a 4×2 grid with five services and three upcoming slots, launch information and partner applications. The extra hero and bottom navigation are removed; language selection is in Profile. No fabricated active trip.
 - Work and Masters read published/approved Firestore records, with search, category filters, sorting and detail dialogs. Lists can request additional records up to 100. Search and sorting operate on the loaded records, not the complete database. Failure and empty states are separate.
 - Taxi renders Cavi Maps directly, without the full Maps app menus. Actual public places can be searched or selected on the map; pickup/destination markers, place details and optional foreground location are available. Mode/class controls prepare the screen only: quotes, road routing and real trip submission are not enabled.
 - Fuel displays actual `amenity=fuel` places from the existing Cavi Maps OpenStreetMap dataset, with search, a 24/7 tag filter and selection on the map. Prices, distance and travel times are not fabricated; hours are source tags and may be outdated. The visible list is limited to 40 matching stations, ordered by proximity to the default Dushanbe centre.
