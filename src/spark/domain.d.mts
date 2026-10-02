@@ -1,0 +1,10 @@
+export const activeStatuses:string[];
+export const services:string[];
+export function textValue(value:unknown,max?:number):string;
+export function phoneValue(value:unknown):string;
+export function pointValue(value:unknown):{lat:number;lon:number;name:string};
+export function nextStatus(order:Record<string,any>,actorId:string,next:string):string;
+export function paymentState(order:Record<string,any>):string;
+export function quoteValue(value:unknown):number;
+export function csvCell(value:unknown):string;
+export function dataToCsv(rows:Record<string,any>[],keys:string[]):string;
