@@ -1,29 +1,41 @@
 # Cavi Go · Capline Group
 
-Firebase project `cavi-go` and Web app were created in caplinegroup.tj@gmail.com on 2026-10-01 UTC. This source is an **initial implementation, not the completed master prompt**. No Cavi Go site deployment has been performed.
+Source: public `Capline-group/Cavi-Go`, as requested by the owner. Firebase project and Web app: `cavi-go`, owned by `caplinegroup.tj@gmail.com`. The owner deployed the initial frontend at https://cavi-go.web.app/ on 2026-10-01 UTC. Version 0.2.0 below is a source update; it is not yet deployed.
 
-## Implemented source
-React/TypeScript responsive Tajik/Russian/Uzbek interface; Firebase email/password registration/sign-in; public published jobs and approved technician lists; server-owned pending job submission; duplicate-safe job application transaction; pending driver application; admin job moderation API with audit. Firebase public Web config from new Cavi Go app. Map URL uses https://capline-group-maps.web.app/.
+## Current interface
 
-Taxi renders the existing Cavi Maps engine with address search, pickup/destination selection, place details and optional foreground geolocation. Real order submission is deliberately disabled. It is not a routing/GPS integration yet. No fake driver, price, OTP, payment or success state.
+Responsive Tajik/Russian/Uzbek interface based on the supplied green/white references: Home, Taxi, Masters, Work, Delivery, Fuel and Profile. Reference names, ratings, balances, prices, restaurants, drivers and arrival times are not seeded as real data.
 
-## Run
-Node 22: `npm ci`, `npm run build`, `npm test`. Run `npm ci --prefix functions`. Frontend `npm run dev`.
+- Home links to all five service areas and partner applications. No fabricated active trip.
+- Work and Masters read published/approved Firestore records, with search, category filters, sorting and detail dialogs. Lists can request additional records up to 100. Search and sorting operate on the loaded records, not the complete database. Failure and empty states are separate.
+- Taxi renders Cavi Maps directly, without the full Maps app menus. Actual public places can be searched or selected on the map; pickup/destination markers, place details and optional foreground location are available. Mode/class controls prepare the screen only: quotes, road routing and real trip submission are not enabled.
+- Fuel displays actual `amenity=fuel` places from the existing Cavi Maps OpenStreetMap dataset, with search, a 24/7 tag filter and selection on the map. Prices, distance and travel times are not fabricated; hours are source tags and may be outdated. The visible list is limited to 40 matching stations, ordered by proximity to the default Dushanbe centre.
+- Delivery has category/search controls and an explicit pre-launch state; no partner catalogue or order submission exists yet.
+- Profile exposes sign-in/registration, name editing, own job applications, language, payment information, address information, password reset and support/about dialogs. Saved addresses, push notifications, promo codes and balances are not implemented.
 
-## Deploy prerequisites
-1. Connect Capline-group GitHub account and create `Cavi-Go` repository. The currently connected GitHub account is sultonmusic; this project has NOT been pushed there.
-2. Firebase email/password provider, Firestore database and App Check web registration must be configured. Register actual Hosting domains in Auth authorized domains. App Check is enforced by the backend; frontend activation remains to be configured with a reCAPTCHA Enterprise site key, not a secret.
-3. Cloud Functions and Cloud Storage production require billing. Project currently uses Spark. Do not upgrade without owner authorizing billing. Use budget alerts / supported spend controls and maxInstances; quotas are not unlimited free service.
-4. From owner-authenticated terminal: `npx firebase-tools hosting:sites:create cavi-go --project cavi-go` (only if absent), `npm run build`, `npx firebase-tools deploy --only hosting --project cavi-go`. This publishes frontend only. Backend: provision Firestore and authorized billing/App Check, then deploy functions/firestore rules/indexes separately. Never deploy relaxed rules.
-5. Bootstrap first admin using owner-controlled ADC and `functions/bootstrap-admin.mjs UID`. Never commit service account keys. Admin UI remains pending.
+The map engine loads only on map pages. Public map assets are fetched from https://sultonmusic.github.io/cavi-maps/; the existing Maps frontend URL is https://capline-group-maps.web.app/. Location selections remain in component memory. Foreground GPS is requested only by pressing the location button. Hashed Hosting assets have long-lived cache headers; the entry HTML is revalidated.
 
-## Explicit remaining scope
-SMS +992 delivery; all service order/offer/upload/completion workflows; private files/CV/chat; employer applications management UI; dispatch/offers/reservations/PIN; RTDB GPS/presence and assigned-party rules; secure full Maps postMessage bridge and private markers; routing backend and fare server; taxi payment confirmations; reviews/reports; organization memberships; admin UI/settings/provider approval; FCM; full PWA offline experience; pagination beyond first page; idempotency for job publication; App Check initialization; emulator rules/concurrency/E2E tests and actual devices; native background driver app.
+## Backend source and validation
 
-The pure domain tests cover validation, integer money, allowed ride transitions and independent payment status only. They do not prove deployed backend, assignment races or rules. RTDB/Storage are deny-all until proper participant isolation and tests are implemented. Firestore is server-write-only and private records are restricted; no universal demo/admin access exists.
+Firebase email/password client integration; server-owned pending job submission; duplicate-safe job applications; pending driver/technician applications; admin job moderation with audit. Technician specialization is retained in its application. No demo admin or universal private-data read exists. Callable functions enforce App Check. Firestore rules restrict private records and deny client writes; Storage and RTDB remain deny-all pending complete participant isolation.
 
-Master requirements included at `MASTER_REQUIREMENTS.txt` for continued implementation. Never interpret this initial package as production-ready taxi software.
+`npm run build` type-checks and builds the frontend. `npm test` runs five pure-domain checks for validation, integer money, ride transition constraints and independent payment status. These checks do not validate deployed rules, dispatch concurrency, map rendering, Firebase setup or an end-to-end order.
 
-## Taxi map screen update
+## Run and publish frontend
 
-Taxi uses the Cavi Maps renderer directly (vendored dependency closure in src/map-engine from sultonmusic/cavi-maps); no full Maps iframe menus. Map assets and searchable places are fetched from the existing Cavi Maps GitHub Pages asset origin. Only public map data is requested; selected locations are held in component memory. No trip submission, fare or road routing is enabled. Foreground GPS is requested only on the location button. Map engine is lazy loaded. Place selection opens a details card, then chooses pickup/destination. Hosting UI was deployed by the owner on 2026-10-01 UTC, prior to this update; deploy the update after pulling it. The copied renderer must be kept in sync with Cavi Maps when changing the binary asset format.
+Use Node 22 or newer supported by the dependencies:
+
+```sh
+npm ci
+npm run build
+npm test
+npx --yes firebase-tools deploy --only hosting --project cavi-go --account caplinegroup.tj@gmail.com
+```
+
+The Hosting site already exists; do not recreate it. Publish Hosting only until the backend prerequisites are complete. Never commit Firebase login caches, tokens, service account keys, private user records, `.env` files or build output.
+
+## Production work remaining
+
+Firebase Auth providers/authorized domains, Firestore provisioning, App Check web initialization and production backend deployment still require verification/configuration. Cloud Functions and Storage production require owner-authorized billing; the project was created on Spark. Do not upgrade silently.
+
+The full master prompt is in `MASTER_REQUIREMENTS.txt`. Remaining work includes +992 SMS delivery verification; service orders/offers/uploads/completion; employer management; secure files/CV/chat; dispatch/reservations/PIN; assigned-party GPS/presence rules; road routing and server fares; payment confirmations; reviews/reports; organizations; admin UI and provider approvals; FCM; offline PWA; database-wide pagination/search; emulator/rules/concurrency/E2E/device tests and a native background driver app. This frontend is not a production-ready taxi platform.
