@@ -1,4 +1,14 @@
 import type {Lang} from './i18n';
+import taxiArt from './service-taxi.webp';
+import toolsArt from './service-services.webp';
+import jobsArt from './service-jobs.webp';
+import deliveryArt from './service-delivery.webp';
+import fuelArt from './service-fuel.webp';
+
+const serviceArt:Record<string,string>={taxi:taxiArt,services:toolsArt,jobs:jobsArt,delivery:deliveryArt,fuel:fuelArt};
+export function ServiceArt({kind,className=''}:{kind:string;className?:string}) {
+ return <img className={`service-art ${className}`} src={serviceArt[kind]} alt="" width="480" height="480" decoding="async" draggable={false}/>;
+}
 
 export const say=(lang:Lang,tg:string,ru:string,uz:string)=>({tg,ru,uz})[lang];
 const paths:Record<string,string>={

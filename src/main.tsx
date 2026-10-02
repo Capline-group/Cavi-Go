@@ -5,7 +5,7 @@ import {collection,query,where,limit,onSnapshot} from 'firebase/firestore';
 import {auth,db,action} from './firebase';
 import {brand} from './config';
 import {text,type Lang} from './i18n';
-import {Icon,say} from './ui';
+import {Icon,ServiceArt,say} from './ui';
 import './style.css';
 
 type Page='home'|'jobs'|'services'|'taxi'|'delivery'|'fuel'|'profile';
@@ -15,14 +15,20 @@ const pages:Page[]=['home','jobs','services','taxi','delivery','fuel','profile']
 const Taxi=lazy(()=>import('./Taxi').then(m=>({default:m.Taxi})));
 const Fuel=lazy(()=>import('./Fuel').then(m=>({default:m.Fuel})));
 const currentPage=():Page=>{const p=location.hash.slice(1) as Page;return pages.includes(p)?p:'home'};
+function preferredLanguage():Lang {
+ try {const saved=localStorage.getItem('cavi-go-language');if(saved==='tg'||saved==='ru'||saved==='uz')return saved;} catch {}
+ return 'tg';
+}
 function App(){
- const [lang,setLang]=useState<Lang>('tg'),[page,setPage]=useState<Page>(currentPage),[user,setUser]=useState<User|null>(null),[rows,setRows]=useState<Row[]>([]),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[modal,setModal]=useState<Modal>(null),[register,setRegister]=useState(false),[loading,setLoading]=useState(false),[search,setSearch]=useState(''),[category,setCategory]=useState('all'),[sort,setSort]=useState('new'),[selected,setSelected]=useState<Row|null>(null),[retry,setRetry]=useState(0),[rowLimit,setRowLimit]=useState(20),[deliveryCategory,setDeliveryCategory]=useState('all');
+ const [lang,setLang]=useState<Lang>(preferredLanguage),[page,setPage]=useState<Page>(currentPage),[user,setUser]=useState<User|null>(null),[rows,setRows]=useState<Row[]>([]),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[modal,setModal]=useState<Modal>(null),[register,setRegister]=useState(false),[loading,setLoading]=useState(false),[search,setSearch]=useState(''),[category,setCategory]=useState('all'),[sort,setSort]=useState('new'),[selected,setSelected]=useState<Row|null>(null),[retry,setRetry]=useState(0),[rowLimit,setRowLimit]=useState(20),[deliveryCategory,setDeliveryCategory]=useState('all');
+ const [profileTarget,setProfileTarget]=useState('');
  const t=text[lang];const s=(tg:string,ru:string,uz:string)=>say(lang,tg,ru,uz);
  const pageName=(p:Page)=>p==='delivery'?s('Расонидан','Доставка','Yetkazib berish'):p==='fuel'?s('Сӯзишворӣ','Заправки','Yoqilg‘i'):t[p];
  const tileName=(p:Page)=>p==='fuel'?s('АЗС','Заправки','Yoqilg‘i'):p==='delivery'?s('Расонидан','Доставка','Yetkazish'):pageName(p);
  function go(p:Page){setModal(null);setSelected(null);setSearch('');setCategory('all');setRowLimit(20);setNotice('');setError('');if(location.hash.slice(1)!==p)location.hash=p;else setPage(p);window.scrollTo({top:0,behavior:'instant'})}
  useEffect(()=>{const f=()=>{setPage(currentPage());setSelected(null);setSearch('');setCategory('all');setError('');setNotice('')};addEventListener('hashchange',f);return()=>removeEventListener('hashchange',f)},[]);
- useEffect(()=>{document.documentElement.lang=lang},[lang]);
+ useEffect(()=>{document.documentElement.lang=lang;try{localStorage.setItem('cavi-go-language',lang)}catch{}},[lang]);
+ useEffect(()=>{if(page==='profile'&&profileTarget){document.getElementById(profileTarget)?.scrollIntoView({behavior:'smooth'});setProfileTarget('')}},[page,profileTarget]);
  useEffect(()=>onAuthStateChanged(auth,setUser),[]);
  useEffect(()=>{
   setRows([]);setError('');setLoading(false);let q;
@@ -53,10 +59,10 @@ function App(){
   <main className={page==='taxi'?'taxi-main':`app-main page-${page}`}>
    {error&&page!=='taxi'&&<div role="alert" className="error">{error}{(page==='jobs'||page==='services'||page==='profile')&&<button className="light" onClick={()=>setRetry(x=>x+1)}>{s('Боз санҷед','Повторить','Qayta urinish')}</button>}</div>}{notice&&<div className="success" role="status">{notice}</div>}
    {page==='home'&&<>
-    <section className="orders-preview"><div className="section-heading"><h2>{s('Фармоишҳои фаъол','Активные заказы','Faol buyurtmalar')}</h2><button className="text-button" aria-label={s('Ҳамаи фармоишҳо','Все заказы','Barcha buyurtmalar')} onClick={()=>go('profile')}>{s('Ҳама','Все','Barchasi')} <Icon name="arrow"/></button></div><div className="no-orders"><span className="icon-disc"><Icon name="clock"/></span><div><b>{s('Ҳоло фармоиши фаъол нест','Пока нет активных заказов','Hozir faol buyurtma yo‘q')}</b><p>{s('Хизматҳои Cavi Go-ро дар поён интихоб кунед.','Выберите сервис Cavi Go ниже.','Quyidan Cavi Go xizmatini tanlang.')}</p></div></div></section>
-    <div className="catalog-heading"><h2>{s('Хизматҳо','Сервисы','Xizmatlar')}</h2><span><Icon name="pin"/>{t.city}</span></div><div className="service-grid">{(['taxi','services','jobs','delivery','fuel'] as Page[]).map(p=><button className={'service-tile service-'+p} key={p} aria-label={pageName(p)} onClick={()=>go(p)}><span className="tile-art"><Icon name={p}/></span><span className="tile-label"><strong>{tileName(p)}</strong><span className="tile-arrow"><Icon name="arrow"/></span></span></button>)}{[1,2,3].map(n=><div key={n} className="service-tile coming-tile"><span className="coming-plus"><Icon name="plus"/></span><strong>{s('Ба зудӣ','Скоро','Tez kunda')}</strong></div>)}</div>
-    <section className="launch-card"><span className="launch-pin"><Icon name="pin"/></span><div><b>{t.city} · Cavi Go</b><p>{t.pending}</p></div></section>
-    <section className="join-card"><div><p className="eyebrow">CAVI GO PARTNERS</p><h2>{s('Бо Cavi Go ҳамкорӣ кунед','Присоединяйтесь к Cavi Go','Cavi Go’ga qo‘shiling')}</h2><p>{s('Барои ронандаҳо, устоҳо ва корфармоён.','Для водителей, мастеров и работодателей.','Haydovchilar, ustalar va ish beruvchilar uchun.')}</p><div className="join-actions"><button onClick={()=>requireUser('driver')}>{t.taxi}</button><button onClick={()=>requireUser('technician')}>{t.services}</button><button onClick={()=>requireUser('job')}>{t.jobs}</button></div></div><Icon name="arrow"/></section>
+    <section className="orders-preview"><div className="section-heading"><h2>{s('Фармоишҳои фаъол','Активные заказы','Faol buyurtmalar')}</h2><button className="text-button" aria-label={s('Ҳамаи фармоишҳо','Все заказы','Barcha buyurtmalar')} onClick={()=>{go('profile');setProfileTarget('my-orders')}}>{s('Ҳама','Все','Barchasi')} <Icon name="arrow"/></button></div><div className="no-orders"><span className="icon-disc"><Icon name="clock"/></span><div><b>{s('Ҳоло фармоиши фаъол нест','Пока нет активных заказов','Hozir faol buyurtma yo‘q')}</b><p>{s('Хизматҳои Cavi Go-ро дар поён интихоб кунед.','Выберите сервис Cavi Go ниже.','Quyidan Cavi Go xizmatini tanlang.')}</p></div></div></section>
+    <div className="catalog-heading"><h2>{s('Хизматҳо','Сервисы','Xizmatlar')}</h2><span><Icon name="pin"/>{t.city}</span></div><div className="service-grid">{(['taxi','services','jobs','delivery','fuel'] as Page[]).map(p=><button className={'service-tile service-'+p} key={p} aria-label={pageName(p)} onClick={()=>go(p)}><span className="tile-art"><ServiceArt kind={p}/></span><span className="tile-label"><strong>{tileName(p)}</strong><span className="tile-arrow"><Icon name="arrow"/></span></span></button>)}{[1,2,3].map(n=><div key={n} className="service-tile coming-tile"><span className="coming-plus"><Icon name="plus"/></span><strong>{s('Ба зудӣ','Скоро','Tez kunda')}</strong></div>)}</div>
+    <section className="launch-card"><span className="launch-pin"><Icon name="pin"/></span><div><b>{t.city} · Cavi Go</b><p>{t.pending}</p></div><button className="launch-more" aria-label={modalTitles.about} onClick={()=>setModal('about')}><Icon name="chevron"/></button></section>
+    <section className="join-card"><div><p className="eyebrow">CAVI GO PARTNERS</p><h2>{s('Бо Cavi Go ҳамкорӣ кунед','Присоединяйтесь к Cavi Go','Cavi Go’ga qo‘shiling')}</h2><p>{s('Барои ронандаҳо, устоҳо ва корфармоён.','Для водителей, мастеров и работодателей.','Haydovchilar, ustalar va ish beruvchilar uchun.')}</p><div className="join-actions"><button onClick={()=>requireUser('driver')}><Icon name="taxi"/>{t.taxi}<Icon name="arrow"/></button><button onClick={()=>requireUser('technician')}><Icon name="services"/>{t.services}<Icon name="arrow"/></button><button onClick={()=>requireUser('job')}><Icon name="jobs"/>{t.jobs}<Icon name="arrow"/></button></div></div><span className="partner-mark" aria-hidden="true">Go<span>↗</span></span></section>
     <section className="benefits"><h2>{s('Чаро Cavi Go?','Почему Cavi Go?','Nega Cavi Go?')}</h2><div><article><Icon name="shield"/><b>{s('Профили шахсӣ','Личный профиль','Shaxsiy profil')}</b><p>{s('Аризаҳо дар ҳисоби шумо','Заявки в вашем аккаунте','Arizalar hisobingizda')}</p></article><article><Icon name="clock"/><b>{s('Қулай','Удобно','Qulay')}</b><p>{s('Хизматҳо дар як ҷо','Сервисы в одном месте','Xizmatlar bir joyda')}</p></article><article><Icon name="pin"/><b>{s('Харитаи маҳаллӣ','Местная карта','Mahalliy xarita')}</b><p>Cavi Maps</p></article><article><Icon name="grid"/><b>{s('Барои ҳама','Для всех','Hamma uchun')}</b><p>{s('Кор, усто ва такси','Работа, мастера и такси','Ish, ustalar va taksi')}</p></article></div></section>
    </>}
    {(page==='jobs'||page==='services')&&<>

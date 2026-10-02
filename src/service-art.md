@@ -1,0 +1,23 @@
+# Cavi Go service artwork
+
+Created on 2026-10-02 with the built-in `imagegen` tool. These are navigation illustrations, not photographs of available vehicles, providers, or products.
+
+Original transparent PNG outputs remain in the generation workspace. Production WebP exports preserve transparency and are sized to 480 × 480 for mobile and desktop service cards.
+
+## Prompts
+
+### taxi
+Use case: product-mockup. Asset type: mobile service-app card image. A real contemporary white compact sedan taxi, front three-quarter view facing left, realistic car proportions, subtle small yellow taxi roof light with no text, dark glass, silver wheels, blank license plate. Premium advertising product photography, photorealistic materials and mature commercial art direction. Isolated single subject on a genuinely transparent background. Centered in a square canvas, subject uses about 82% of width and 75% of height, generous clean transparent margins, whole object visible. Soft studio light from upper left, crisp silhouette readable when displayed 90 pixels wide, very subtle attached contact shadow only, no separate floor or backdrop. No text, no logos, no watermark, no sticker outline, no cartoon, no toy, no clay, no inflated shapes.
+
+### services
+Use case: product-mockup. Asset type: mobile service-app card image. A small professional tradesperson tool set: a realistic brushed-steel adjustable wrench crossing a black-and-deep-green handled screwdriver, accompanied by a small yellow tape measure. Restrained colors, precise metal details. Premium advertising product photography, photorealistic materials and mature commercial art direction. Isolated single subject on a genuinely transparent background. Centered in a square canvas, subject uses about 82% of width and 75% of height, generous clean transparent margins, whole object visible. Soft studio light from upper left, crisp silhouette readable when displayed 90 pixels wide, very subtle attached contact shadow only, no separate floor or backdrop. No text, no logos, no watermark, no sticker outline, no cartoon, no toy, no clay, no inflated shapes.
+
+### jobs
+Use case: product-mockup. Asset type: mobile service-app card image. A premium deep-forest-green leather business briefcase, three-quarter view, realistic leather grain, understated silver hardware, a neat ivory document peeking out without any writing. Premium advertising product photography, photorealistic materials and mature commercial art direction. Isolated single subject on a genuinely transparent background. Centered in a square canvas, subject uses about 82% of width and 75% of height, generous clean transparent margins, whole object visible. Soft studio light from upper left, crisp silhouette readable when displayed 90 pixels wide, very subtle attached contact shadow only, no separate floor or backdrop. No text, no logos, no watermark, no sticker outline, no cartoon, no toy, no clay, no inflated shapes.
+
+### delivery
+Use case: product-mockup. Asset type: mobile service-app card image. A realistic compact delivery scooter, three-quarter view facing left, ivory body, black rubber tires, dark-forest-green insulated delivery box mounted on the rear. Plausible full-size scooter proportions. Premium advertising product photography, photorealistic materials and mature commercial art direction. Isolated single subject on a genuinely transparent background. Centered in a square canvas, subject uses about 82% of width and 75% of height, generous clean transparent margins, whole object visible. Soft studio light from upper left, crisp silhouette readable when displayed 90 pixels wide, very subtle attached contact shadow only, no separate floor or backdrop. No text, no logos, no watermark, no sticker outline, no cartoon, no toy, no clay, no inflated shapes.
+
+### fuel
+Use case: product-mockup. Asset type: mobile service-app card image. A realistic modern petrol dispenser, three-quarter view, white metal body with deep-forest-green side panels, dark display without numbers, black fuel hose and nozzle, stainless-steel details. Premium advertising product photography, photorealistic materials and mature commercial art direction. Isolated single subject on a genuinely transparent background. Centered in a square canvas, subject uses about 82% of width and 75% of height, generous clean transparent margins, whole object visible. Soft studio light from upper left, crisp silhouette readable when displayed 90 pixels wide, very subtle attached contact shadow only, no separate floor or backdrop. No text, no logos, no watermark, no sticker outline, no cartoon, no toy, no clay, no inflated shapes.
+
