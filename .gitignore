@@ -4,3 +4,7 @@ dist/
 !.env.example
 .firebase/
 *-debug.log
+
+tests/generated/
+
+spark-setup-backup/
