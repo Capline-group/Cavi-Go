@@ -4,7 +4,7 @@ import {ActiveOrders} from './spark/ActiveOrders';
 import React,{useEffect,useState,Suspense,lazy} from 'react';
 import {createRoot} from 'react-dom/client';
 import {onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail,type User} from 'firebase/auth';
-import {collection,doc,query,where,limit,onSnapshot} from 'firebase/firestore';
+import {collection,query,where,limit,onSnapshot} from 'firebase/firestore';
 import {auth,db,action} from './firebase';
 import {brand} from './config';
 import {text,type Lang} from './i18n';
@@ -13,7 +13,6 @@ import './style.css';
 
 type Page='home'|'jobs'|'services'|'taxi'|'delivery'|'fuel'|'profile';
 type Row={id:string;title?:string;company?:string;description?:string;status?:string;name?:string;category?:string;city?:string;salaryMin?:number;salaryMax?:number;experience?:string;employmentType?:string;jobId?:string;createdAt?:{seconds:number}};
-type PlatformSettings={supportEmail?:string;supportPhone?:string};
 type Modal='auth'|'job'|'driver'|'technician'|'info'|'payment'|'addresses'|'language'|'notifications'|'security'|'help'|'about'|'balance'|'promos'|'contact'|null;
 const pages:Page[]=['home','jobs','services','taxi','delivery','fuel','profile'];
 const Taxi=lazy(()=>import('./Taxi').then(m=>({default:m.Taxi})));
@@ -24,7 +23,7 @@ function preferredLanguage():Lang {
  return 'tg';
 }
 function App(){
- const [lang,setLang]=useState<Lang>(preferredLanguage),[page,setPage]=useState<Page>(currentPage),[user,setUser]=useState<User|null>(null),[rows,setRows]=useState<Row[]>([]),[platform,setPlatform]=useState<PlatformSettings|null>(null),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[modal,setModal]=useState<Modal>(null),[register,setRegister]=useState(false),[loading,setLoading]=useState(false),[search,setSearch]=useState(''),[category,setCategory]=useState('all'),[sort,setSort]=useState('new'),[selected,setSelected]=useState<Row|null>(null),[retry,setRetry]=useState(0),[rowLimit,setRowLimit]=useState(20),[deliveryCategory,setDeliveryCategory]=useState('all');
+ const [lang,setLang]=useState<Lang>(preferredLanguage),[page,setPage]=useState<Page>(currentPage),[user,setUser]=useState<User|null>(null),[rows,setRows]=useState<Row[]>([]),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[modal,setModal]=useState<Modal>(null),[register,setRegister]=useState(false),[loading,setLoading]=useState(false),[search,setSearch]=useState(''),[category,setCategory]=useState('all'),[sort,setSort]=useState('new'),[selected,setSelected]=useState<Row|null>(null),[retry,setRetry]=useState(0),[rowLimit,setRowLimit]=useState(20),[deliveryCategory,setDeliveryCategory]=useState('all');
  const [profileTarget,setProfileTarget]=useState('');
  const t=text[lang];const s=(tg:string,ru:string,uz:string)=>say(lang,tg,ru,uz);
  const pageName=(p:Page)=>p==='delivery'?s('Расонидан','Доставка','Yetkazib berish'):p==='fuel'?s('Сӯзишворӣ','Заправки','Yoqilg‘i'):t[p];
@@ -34,7 +33,6 @@ function App(){
  useEffect(()=>{document.documentElement.lang=lang;try{localStorage.setItem('cavi-go-language',lang)}catch{}},[lang]);
  useEffect(()=>{if(page==='profile'&&profileTarget){document.getElementById(profileTarget)?.scrollIntoView({behavior:'smooth'});setProfileTarget('')}},[page,profileTarget]);
  useEffect(()=>onAuthStateChanged(auth,setUser),[]);
- useEffect(()=>onSnapshot(doc(db,'settings','platform'),snapshot=>setPlatform(snapshot.exists()?snapshot.data():null),()=>setPlatform(null)),[]);
  useEffect(()=>{
   setRows([]);setError('');setLoading(false);let q;
   if(page==='jobs')q=query(collection(db,'jobPosts'),where('status','==','published'),limit(rowLimit));
@@ -59,8 +57,6 @@ function App(){
  const modalTitles:Record<Exclude<Modal,null>,string>={auth:register?t.register:t.login,job:t.publish,driver:t.driver,technician:s('Аризаи усто','Заявка мастера','Ustalik arizasi'),info:s('Маълумоти ман','Мои данные','Ma’lumotlarim'),payment:t.payment,addresses:s('Суроғаҳои ман','Мои адреса','Manzillarim'),language:s('Забон','Язык','Til'),notifications:s('Огоҳиномаҳо','Уведомления','Bildirishnomalar'),security:s('Амният','Безопасность','Xavfsizlik'),help:s('Ёрӣ','Помощь','Yordam'),about:s('Дар бораи барнома','О приложении','Ilova haqida'),balance:s('Тавозун','Баланс','Balans'),promos:s('Промокодҳо','Промокоды','Promokodlar'),contact:s('Бо мо тамос гиред','Связаться с нами','Biz bilan bog‘lanish')};
  const profileGroups=[{title:s('Маълумоти шахсӣ','Личные данные','Shaxsiy ma’lumotlar'),items:[['info','profile',modalTitles.info,s('Ном ва email','Имя и email','Ism va email')],['payment','card',t.payment,s('Нақд ё интиқоли мустақим','Наличные или прямой перевод','Naqd yoki bevosita o‘tkazma')],['addresses','pin',modalTitles.addresses,s('Хона, кор ва дигар ҷойҳо','Дом, работа и другие места','Uy, ish va boshqa joylar')]]},{title:s('Танзимот','Настройки','Sozlamalar'),items:[['language','language',modalTitles.language,{tg:'Тоҷикӣ',ru:'Русский',uz:'O‘zbekcha'}[lang]],['notifications','bell',modalTitles.notifications,s('Фармоишҳо ва навигариҳо','Заказы и новости','Buyurtmalar va yangiliklar')],['security','shield',modalTitles.security,s('Воридшавӣ ва махфият','Вход и конфиденциальность','Kirish va maxfiylik')]]},{title:s('Дастгирӣ','Поддержка','Qo‘llab-quvvatlash'),items:[['help','support',modalTitles.help,s('Саволҳо ва ҷавобҳо','Вопросы и ответы','Savollar va javoblar')],['contact','chat',modalTitles.contact,s('Дастгирӣ','Поддержка','Yordam')],['about','info',modalTitles.about,'Cavi Go · Capline Group']] }];
  const languageControl=<select aria-label={modalTitles.language} value={lang} onChange={e=>setLang(e.target.value as Lang)}><option value="tg">Тоҷикӣ</option><option value="ru">Русский</option><option value="uz">O‘zbekcha</option></select>;
- const supportEmail=platform?.supportEmail?.trim(),supportPhone=platform?.supportPhone?.trim();
- const supportContacts=supportEmail||supportPhone?<div className="support-contacts">{supportEmail&&<a className="support-link" href={`mailto:${supportEmail}`}>{supportEmail}</a>}{supportPhone&&<a className="support-link" href={`tel:${supportPhone.replace(/[^+\d]/g,'')}`}>{supportPhone}</a>}</div>:<p className="muted">{s('Маълумоти тамос ҳоло дастрас нест.','Контактные данные пока недоступны.','Aloqa ma’lumotlari hozircha mavjud emas.')}</p>;
  return <>
   <header className="app-header"><div className="header-brand">{page!=='home'&&<button className="icon-button" aria-label={t.home} onClick={()=>go('home')}><Icon name="back"/></button>}<button className="logo" onClick={()=>go('home')}>Cavi <span>Go</span></button></div><div className="header-actions">{page==='profile'?<button className="settings-button" onClick={()=>document.getElementById('profile-settings')?.scrollIntoView({behavior:'smooth'})}><Icon name="settings"/>{s('Танзимот','Настройки','Sozlamalar')}</button>:<button className="profile-button" aria-label={t.profile} onClick={()=>go('profile')}><Icon name="profile"/></button>}</div></header>
   <main className={page==='taxi'?'taxi-main':`app-main page-${page}`}><EmailVerification lang={lang}/>
@@ -101,7 +97,7 @@ function App(){
    modal==='addresses'?<><p>{s('Суроғаи захирашуда нест. Барои сафар нуқтаро дар харита интихоб кунед.','Сохранённых адресов нет. Выберите точку на карте для поездки.','Saqlangan manzil yo‘q. Safar uchun xaritadan nuqta tanlang.')}</p><button onClick={()=>go('taxi')}>{t.map}</button></>:
    modal==='notifications'?<p>{s('Огоҳиномаҳои фармоиш баъд аз оғози хизмат фаъол мешаванд.','Уведомления о заказах появятся после запуска сервиса.','Buyurtma bildirishnomalari xizmat ishga tushganda faollashadi.')}</p>:
    modal==='security'?<><p>{s('Аризаҳои шахсӣ тавассути ҳисоби шумо кушода мешаванд.','Личные заявки открываются через ваш аккаунт.','Shaxsiy arizalar hisobingiz orqali ochiladi.')}</p>{user?.email?<button disabled={busy} onClick={()=>run(async()=>{await sendPasswordResetEmail(auth,user.email!);setModal(null);setNotice(s('Ба email пайванди тағйири рамз фиристода шуд.','Ссылка для сброса пароля отправлена на email.','Parolni tiklash havolasi emailga yuborildi.'))})}>{s('Тағйири рамз','Сбросить пароль','Parolni tiklash')}</button>:<button onClick={()=>setModal('auth')}>{t.login}</button>}</>:
-   (modal==='help'||modal==='contact')?<><p>{t.pending}</p><p>{s('Барои саволҳо бо Capline Group тамос гиред.','По вопросам свяжитесь с Capline Group.','Savollar uchun Capline Group bilan bog‘laning.')}</p>{supportContacts}</>:
+   (modal==='help'||modal==='contact')?<><p>{t.pending}</p><p>{s('Барои саволҳо ба Capline Group нависед.','По вопросам пишите в Capline Group.','Savollar uchun Capline Group’ga yozing.')}</p><a className="support-link" href="mailto:caplinegroup.tj@gmail.com">caplinegroup.tj@gmail.com</a></>:
    (modal==='balance'||modal==='promos')?<p>{s('Ин имконият ҳоло фаъол нест.','Эта возможность пока не подключена.','Bu imkoniyat hali ulanmagan.')}</p>:
    modal==='about'?<><b>Cavi Go · {brand.company}</b><p>{t.subtitle}</p><p>Cavi Maps · © OpenStreetMap contributors</p><p className="muted">0.2.0</p></>:
    <><p>{t.signin}</p><button onClick={()=>setModal('auth')}>{t.login}</button></>}
